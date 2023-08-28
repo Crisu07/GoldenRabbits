@@ -1,0 +1,60 @@
+// GoldRabbits.tools
+#include <iostream>
+#include <map>
+#include <vector>
+using namespace std;
+
+int goldRabbits(int n)
+{
+	try
+	{
+		if (n == 0 || n == 1)
+		{
+			return 1;
+		}
+		else
+		{
+			int x = goldRabbits(n - 1) + goldRabbits(n - 2);
+			if (x < 0) // numbers that exceed int max will be negative
+			{
+				throw(n);
+			}
+			else
+			{
+				return x;
+			}
+		}
+	}
+	catch (int e)
+	{
+		string s = "Overflow Error - goldRabbits overflowed using " + to_string(e);
+		throw(s); // has to throw a string instead of couting it because the main funct tries to catch a string
+	}
+}
+
+BigInt goldRabbits(BigInt n)
+{
+	static map <BigInt, BigInt> B; // BigInts map
+	BigInt zero(0);
+	BigInt one(1);
+	BigInt two(2);
+	
+	if (B.find(n) == B.end()) // use find() to see if n already exists as a key
+	{
+		if (n == zero || n == one)
+		{
+			B.insert(make_pair(n, one));
+			return one;
+		}
+		else
+		{
+			BigInt nv = goldRabbits(n - one) + goldRabbits(n - two); // calculate new n before storing
+			B.insert(make_pair(n, nv));
+			return nv;
+		}
+	}
+	else
+	{
+		return B[n];
+	}
+}
